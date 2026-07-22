@@ -16,5 +16,7 @@ namespace AutoParts.Models.Produtos
         public int MarcaId { get; set; }
         public Marca Marca { get; set; } = null!;
         public bool Ativo { get; private set; }
+        //public string? Localizacao { get; set; }
+        //public string? Observacoes { get; set; }
     }
 }

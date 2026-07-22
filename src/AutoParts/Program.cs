@@ -4,6 +4,7 @@ using AutoParts.Repositories.Interfaces;
 using AutoParts.Services.Implementations;
 using AutoParts.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using AutoParts.Data.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,9 +13,13 @@ builder.Services.AddControllersWithViews();
 
 //Repositories
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<IMarcaRepository, MarcaRepository>();
 
 //Services
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<IMarcaService, MarcaService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
@@ -42,5 +47,12 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider
+                       .GetRequiredService<ApplicationDbContext>();
+
+    await DbInitializer.SeedAsync(context);
+}
 
 app.Run();

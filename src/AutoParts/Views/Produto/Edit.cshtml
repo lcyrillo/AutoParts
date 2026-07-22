@@ -1,12 +1,14 @@
 ﻿@model AutoParts.ViewModels.ProdutoFormViewModel
 
 @{
-    ViewData["Title"] = "Novo Produto";
+    ViewData["Title"] = "Editar Produto";
 }
 
 <partial name="_ProdutoToolbar" />
 
-<form asp-action="Create" method="post">
+<form asp-action="Edit" method="post">
+
+    <input asp-for="Id" hidden />
 
     <partial name="_ProdutoForm" model="Model" />
 
