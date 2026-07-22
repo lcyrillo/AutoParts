@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - AutoParts</title>
+
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet" href="~/css/site.css" />
+
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+</head>
+
+
+<body>
+
+
+    <div class="app-container">
+
+
+        <!-- MENU LATERAL -->
+
+        <aside class="sidebar">
+
+
+            <div class="brand">
+
+                <i class="bi bi-car-front-fill"></i>
+
+                AutoParts
+
+            </div>
+
+
+
+            <nav>
+
+
+                <a asp-controller="Home" asp-action="Index">
+
+                    <i class="bi bi-speedometer2"></i>
+
+                    Dashboard
+
+                </a>
+
+
+
+                <span class="menu-title">
+                    Cadastros
+                </span>
+
+
+
+                <a asp-controller="Produto" asp-action="Index">
+
+                    <i class="bi bi-box-seam"></i>
+
+                    Produtos
+
+                </a>
+
+
+
+                <a>
+
+                    <i class="bi bi-tags"></i>
+
+                    Categorias
+
+                </a>
+
+
+                <a>
+
+                    <i class="bi bi-building"></i>
+
+                    Fornecedores
+
+                </a>
+
+
+
+                <a>
+
+                    <i class="bi bi-people"></i>
+
+                    Clientes
+
+                </a>
+
+
+
+                <span class="menu-title">
+                    Operações
+                </span>
+
+
+                <a>
+
+                    <i class="bi bi-cart"></i>
+
+                    Vendas
+
+                </a>
+
+
+
+                <a>
+
+                    <i class="bi bi-box-arrow-in-down"></i>
+
+                    Estoque
+
+                </a>
+
+
+
+                <span class="menu-title">
+                    Financeiro
+                </span>
+
+
+                <a>
+
+                    <i class="bi bi-cash-stack"></i>
+
+                    Financeiro
+
+                </a>
+
+
+
+            </nav>
+
+
+        </aside>
+
+
+
+
+
+        <!-- ÁREA PRINCIPAL -->
+
+
+        <main class="main-content">
+
+
+            <header class="topbar">
+
+
+                <div>
+                    Sistema de Gestão de Auto Peças
+                </div>
+
+
+
+                <div>
+
+                    <i class="bi bi-person-circle"></i>
+
+                    Administrador
+
+                </div>
+
+
+            </header>
+
+
+
+
+            <section class="content">
+
+
+                @RenderBody()
+
+
+            </section>
+
+
+
+        </main>
+
+
+    </div>
+
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+
+</body>
+
+</html>

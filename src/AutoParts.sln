@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36915.13 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoParts", "AutoParts\AutoParts.csproj", "{0176A0D8-C2C5-48A4-9405-6D16C511F6EB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0176A0D8-C2C5-48A4-9405-6D16C511F6EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0176A0D8-C2C5-48A4-9405-6D16C511F6EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0176A0D8-C2C5-48A4-9405-6D16C511F6EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0176A0D8-C2C5-48A4-9405-6D16C511F6EB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8770BFBD-E578-44A8-AD58-C3194B5A5A38}
+	EndGlobalSection
+EndGlobal

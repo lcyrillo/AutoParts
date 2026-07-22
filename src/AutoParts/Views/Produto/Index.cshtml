@@ -1,0 +1,383 @@
+﻿@model IEnumerable<AutoParts.Models.Produtos.Produto>
+
+@{
+    ViewData["Title"] = "Produtos";
+}
+
+
+<div class="container-fluid">
+
+
+    <!-- Cabeçalho -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+
+        <div>
+
+            <h2 class="fw-bold">
+
+                <i class="bi bi-box-seam"></i>
+
+                Produtos
+
+            </h2>
+
+
+            <span class="text-muted">
+                Gerenciamento de produtos e estoque
+            </span>
+
+        </div>
+
+
+
+        <a asp-action="Create"
+           class="btn btn-primary">
+
+            <i class="bi bi-plus-circle"></i>
+
+            Novo Produto
+
+        </a>
+
+
+    </div>
+
+
+
+
+
+    <!-- Cards -->
+
+
+    <div class="row mb-4">
+
+
+        <div class="col-md-4">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-body">
+
+
+                    <div class="text-muted">
+
+                        Total de Produtos
+
+                    </div>
+
+
+                    <h2 class="fw-bold">
+
+                        @Model.Count()
+
+                    </h2>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="col-md-4">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-body">
+
+
+                    <div class="text-muted">
+
+                        Estoque Total
+
+                    </div>
+
+
+                    <h2 class="fw-bold">
+
+                        @Model.Sum(x => x.Estoque)
+
+                    </h2>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+        <div class="col-md-4">
+
+
+            <div class="card shadow-sm border-0">
+
+
+                <div class="card-body">
+
+
+                    <div class="text-muted">
+
+                        Produtos Ativos
+
+                    </div>
+
+
+                    <h2 class="fw-bold">
+
+                        @Model.Count(x => x.Ativo)
+
+                    </h2>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+    <!-- Tabela -->
+
+
+    <div class="card shadow-sm border-0">
+
+
+        <div class="card-body">
+
+
+            <div class="table-responsive">
+
+
+                <table class="table table-hover align-middle">
+
+
+                    <thead class="table-dark">
+
+
+                        <tr>
+
+                            <th>
+                                Código
+                            </th>
+
+
+                            <th>
+                                Produto
+                            </th>
+
+
+                            <th>
+                                Categoria
+                            </th>
+
+
+                            <th>
+                                Marca
+                            </th>
+
+
+                            <th>
+                                Estoque
+                            </th>
+
+
+                            <th>
+                                Preço
+                            </th>
+
+
+                            <th>
+                                Status
+                            </th>
+
+
+                            <th>
+                                Ações
+                            </th>
+
+
+                        </tr>
+
+
+                    </thead>
+
+
+
+                    <tbody>
+
+
+                        @foreach (var item in Model)
+                        {
+
+                            <tr>
+
+
+                                <td>
+                                    @item.Codigo
+                                </td>
+
+
+
+                                <td class="fw-semibold">
+
+                                    @item.Descricao
+
+                                </td>
+
+
+
+                                <td>
+
+                                    @item.Categoria?.Descricao
+
+                                </td>
+
+
+
+                                <td>
+
+                                    @item.Marca?.Descricao
+
+                                </td>
+
+
+
+
+                                <td>
+
+
+                                    @if (item.Estoque <= item.EstoqueMinimo)
+                                    {
+
+                                        <span class="badge bg-danger">
+
+                                            @item.Estoque
+
+                                        </span>
+
+                                    }
+                                    else
+                                    {
+
+                                        <span class="badge bg-success">
+
+                                            @item.Estoque
+
+                                        </span>
+
+                                    }
+
+
+                                </td>
+
+
+
+
+
+                                <td>
+
+                                    @item.PrecoVenda.ToString("C")
+
+                                </td>
+
+
+
+
+
+                                <td>
+
+
+                                    @if (item.Ativo)
+                                    {
+
+                                        <span class="badge bg-success">
+                                            Ativo
+                                        </span>
+
+                                    }
+                                    else
+                                    {
+
+                                        <span class="badge bg-secondary">
+                                            Inativo
+                                        </span>
+
+                                    }
+
+
+                                </td>
+
+
+
+
+
+                                <td>
+
+
+                                    <a class="btn btn-sm btn-outline-primary">
+
+                                        <i class="bi bi-pencil"></i>
+
+                                    </a>
+
+
+
+                                    <a class="btn btn-sm btn-outline-danger">
+
+                                        <i class="bi bi-trash"></i>
+
+                                    </a>
+
+
+                                </td>
+
+
+
+                            </tr>
+
+
+                        }
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
