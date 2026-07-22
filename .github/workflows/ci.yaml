@@ -13,41 +13,40 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     defaults:
       run:
         working-directory: ./src
 
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-        - name: Setup .NET
-          uses: actions/setup-dotnet@v4
-          with:
-            dotnet-version: '9.0.x'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
 
-        - name: Restore
-          run: dotnet restore AutoParts.sln
+      - name: Restore
+        run: dotnet restore AutoParts.sln
 
-        - name: Build
-          run: dotnet build AutoParts.sln --configuration Release --no-restore
+      - name: Build
+        run: dotnet build AutoParts.sln --configuration Release --no-restore
 
-        - name: Test
-          run: |
-            if find . -name "*Tests.csproj" | grep -q .; then
-              dotnet test AutoParts.sln --configuration Release --no-build
-            else
-              echo "Nenhum projeto de testes encontrado."
-            fi
+      - name: Test
+        run: |
+          if find . -name "*Tests.csproj" | grep -q .; then
+            dotnet test AutoParts.sln --configuration Release --no-build
+          else
+            echo "Nenhum projeto de testes encontrado."
+          fi
 
-        - name: Publish
-          run: dotnet publish AutoParts/AutoParts.csproj --configuration Release --output ./publish
+      - name: Publish
+        run: dotnet publish AutoParts/AutoParts.csproj --configuration Release --output ./publish
 
-        - name: Upload Artifact
-          uses: actions/upload-artifact@v4
-          with:
-            name: AutoParts
-            path: src/publish
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoParts
+          path: src/publish
