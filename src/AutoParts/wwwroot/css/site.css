@@ -1,91 +1,334 @@
-body {
+/* ============================================================ AutoParts ERP Base Theme ============================================================ */
+
+:root {
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --dark: #111827;
+    --dark-2: #1f2937;
+    --gray: #6b7280;
+    --border: #e5e7eb;
+    --background: #f3f6fb;
+    --card: #ffffff;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --topbar-height: 64px;
+    --sidebar-width: 240px;
+    --sidebar-mini: 72px;
+    --transition: .25s ease;
+}
+/* ============================================================ Reset ============================================================ */
+
+* {
     margin: 0;
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: #f5f6fa;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+}
 
+body {
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--background);
+    overflow: hidden;
+    color: #222;
+}
+/* ============================================================ Layout ============================================================ */
 
-.app-container {
+.app-layout {
     display: flex;
     height: 100vh;
+    width: 100%;
 }
-
-
+/* ============================================================ Sidebar ============================================================ */
 
 .sidebar {
-    width: 260px;
-    background: #111827;
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    background: var(--dark);
     color: white;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+    box-shadow: 3px 0 12px rgba(0,0,0,.10);
+    z-index: 1000;
 }
 
-
-
-.brand {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 35px;
-}
-
-
-
-    .brand i {
-        margin-right: 10px;
-    }
-
-
-
-.sidebar a {
+.logo {
     display: flex;
     align-items: center;
-    gap: 12px;
-    color: #cbd5e1;
-    text-decoration: none;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 5px;
+    gap: 14px;
+    padding: 22px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
-
-
-    .sidebar a:hover {
-        background: #1e293b;
-        color: white;
-    }
-
-
-
-.menu-title {
-    display: block;
-    color: #64748b;
-    font-size: 12px;
-    text-transform: uppercase;
-    margin-top: 25px;
-    margin-bottom: 10px;
+.logo-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: var(--primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
 }
 
+.logo h4 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 20px;
+}
 
+.logo small {
+    color: #9ca3af;
+}
+/* ============================================================ Menu ============================================================ */
 
-.main-content {
+.sidebar nav {
+    padding: 18px 12px;
+    overflow-y: auto;
     flex: 1;
 }
 
+    .sidebar nav span {
+        display: block;
+        margin-top: 24px;
+        margin-bottom: 10px;
+        padding-left: 14px;
+        font-size: 11px;
+        color: #6b7280;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
 
+    .sidebar nav a {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: #d1d5db;
+        text-decoration: none;
+        padding: 13px 15px;
+        border-radius: 12px;
+        transition: var(--transition);
+        margin-bottom: 5px;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+        .sidebar nav a i {
+            width: 22px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .sidebar nav a:hover {
+            background: #1f2937;
+            color: white;
+        }
+
+        .sidebar nav a.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 8px 18px rgba(37,99,235,.25);
+        }
+/* ============================================================ Main ============================================================ */
+
+.app-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+/* ============================================================ Topbar ============================================================ */
 
 .topbar {
-    height: 65px;
+    height: var(--topbar-height);
     background: white;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 0 30px;
-    box-shadow: 0 2px 5px rgba(0,0,0,.08);
+    justify-content: space-between;
+    padding: 0 28px;
+    border-bottom: 1px solid var(--border);
 }
 
+.search-box {
+    display: flex;
+    align-items: center;
+    width: 420px;
+    background: #f5f7fa;
+    border-radius: 12px;
+    padding: 10px 15px;
+    gap: 10px;
+}
 
+    .search-box input {
+        border: none;
+        background: transparent;
+        width: 100%;
+        outline: none;
+    }
 
-.content {
-    padding: 30px;
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.btn-icon {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 10px;
+    background: #f5f7fa;
+    cursor: pointer;
+    transition: .2s;
+}
+
+    .btn-icon:hover {
+        background: #e8edf5;
+    }
+
+.user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+    .user img {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+    }
+/* ============================================================ Page ============================================================ */
+
+.page-wrapper {
+    flex: 1;
     overflow: auto;
+    padding: 26px;
+}
+/* ============================================================ Breadcrumb ============================================================ */
+
+.breadcrumb-box {
+    color: #6b7280;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+/* ============================================================ Cards ============================================================ */
+
+.card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.05);
+}
+
+.card-header {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+}
+/* ============================================================ Dashboard ============================================================ */
+
+.dashboard-card {
+    transition: .25s;
+    cursor: pointer;
+}
+
+    .dashboard-card:hover {
+        transform: translateY(-6px);
+    }
+
+    .dashboard-card .card-body {
+        padding: 22px;
+    }
+
+.dashboard-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    margin-bottom: 18px;
+}
+/* ============================================================ Buttons ============================================================ */
+
+.btn-primary {
+    background: var(--primary);
+    border: none;
+}
+
+    .btn-primary:hover {
+        background: var(--primary-hover);
+    }
+/* ============================================================ Forms ============================================================ */
+
+.form-control, .form-select {
+    border-radius: 10px;
+    min-height: 44px;
+    border: 1px solid var(--border);
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 .18rem rgba(37,99,235,.15);
+    }
+
+textarea.form-control {
+    min-height: 120px;
+}
+/* ============================================================ Tables ============================================================ */
+
+.table {
+    vertical-align: middle;
+}
+
+    .table thead {
+        background: #f8fafc;
+    }
+
+        .table thead th {
+            font-weight: 600;
+            color: #c8c2c2;
+            border-bottom: 2px solid var(--border);
+        }
+
+.table-hover tbody tr:hover {
+    background: #f8fbff;
+}
+/* ============================================================ Responsive ============================================================ */
+
+@media(max-width:992px) {
+    .sidebar {
+        position: fixed;
+        left: -240px;
+        top: 0;
+        bottom: 0;
+    }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+    .search-box {
+        width: 220px;
+    }
+}
+
+@media(max-width:768px) {
+    .topbar {
+        padding: 0 15px;
+    }
+
+    .search-box {
+        display: none;
+    }
+
+    .page-wrapper {
+        padding: 16px;
+    }
 }

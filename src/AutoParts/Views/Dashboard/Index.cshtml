@@ -1,0 +1,387 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                Dashboard
+            </h2>
+
+            <span class="text-muted">
+                Bem-vindo ao AutoParts ERP
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+
+            <div class="card dashboard-card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="dashboard-icon bg-primary">
+
+                        <i class="bi bi-box-seam"></i>
+
+                    </div>
+
+                    <h3>1.248</h3>
+
+                    <small>Produtos</small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card dashboard-card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="dashboard-icon bg-success">
+
+                        <i class="bi bi-people"></i>
+
+                    </div>
+
+                    <h3>534</h3>
+
+                    <small>Clientes</small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card dashboard-card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="dashboard-icon bg-warning">
+
+                        <i class="bi bi-currency-dollar"></i>
+
+                    </div>
+
+                    <h3>R$ 158.420</h3>
+
+                    <small>Vendas do Mês</small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card dashboard-card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="dashboard-icon bg-danger">
+
+                        <i class="bi bi-exclamation-triangle"></i>
+
+                    </div>
+
+                    <h3>17</h3>
+
+                    <small>Estoque Baixo</small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row mt-4">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white">
+
+                    <strong>Vendas nos últimos 12 meses</strong>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div style="height:320px">
+
+                        <div style="height:320px">
+
+                            <canvas id="salesChart"></canvas>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white">
+
+                    <strong>Produtos por Categoria</strong>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div style="height:320px">
+
+                        <div style="height:320px">
+
+                            <canvas id="categoryChart"></canvas>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row mt-4">
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white">
+
+                    <strong>Top Produtos</strong>
+
+                </div>
+
+                <div class="card-body">
+
+                    <div style="height:320px">
+
+                        <div style="height:320px">
+
+                            <canvas id="productChart"></canvas>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-6">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-white">
+
+                    <strong>Últimas Vendas</strong>
+
+                </div>
+
+                <div class="card-body">
+
+                    <table class="table table-hover">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Cliente</th>
+                                <th>Produto</th>
+                                <th>Valor</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr><td>João Silva</td><td>Pastilha Bosch</td><td>R$ 285,00</td></tr>
+                            <tr><td>Maria Souza</td><td>Filtro Mann</td><td>R$ 98,00</td></tr>
+                            <tr><td>Carlos Lima</td><td>Amortecedor Cofap</td><td>R$ 740,00</td></tr>
+                            <tr><td>Pedro Costa</td><td>Velas NGK</td><td>R$ 165,00</td></tr>
+                            <tr><td>Lucas Dias</td><td>Disco TRW</td><td>R$ 430,00</td></tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+        // =============================
+        // Gráfico de Vendas
+        // =============================
+
+        new Chart(document.getElementById('salesChart'), {
+
+            type: 'line',
+
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                datasets: [{
+                    label: 'Vendas',
+                    data: [55, 62, 80, 95, 110, 105, 130, 145, 160, 170, 185, 210],
+                    tension: 0.35,
+                    fill: true
+                }]
+            },
+
+            options: {
+
+                responsive: true,
+                maintainAspectRatio: false,
+
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+
+                elements: {
+                    line: {
+                        borderWidth: 3
+                    },
+                    point: {
+                        radius: 5,
+                        hoverRadius: 8
+                    }
+                }
+
+            }
+
+        });
+
+        // =============================
+        // Categorias
+        // =============================
+
+        new Chart(document.getElementById('categoryChart'), {
+
+            type: 'doughnut',
+
+            data: {
+                labels: ['Motor', 'Freios', 'Filtros', 'Elétrica', 'Suspensão'],
+                datasets: [{
+                    data: [35, 25, 15, 12, 13]
+                }]
+            },
+
+            options: {
+
+                responsive: true,
+                maintainAspectRatio: false,
+
+                cutout: '70%',
+
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                },
+
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+
+            }
+
+        });
+
+        // =============================
+        // Produtos
+        // =============================
+
+        new Chart(document.getElementById('productChart'), {
+
+            type: 'bar',
+
+            data: {
+                labels: ['Pastilha', 'Filtro', 'Velas', 'Óleo', 'Amortecedor'],
+                datasets: [{
+                    label: 'Vendas',
+                    data: [250, 210, 170, 130, 95]
+                }]
+            },
+
+            options: {
+
+                responsive: true,
+                maintainAspectRatio: false,
+
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+
+            }
+
+        });
+
+    </script>
+
+}

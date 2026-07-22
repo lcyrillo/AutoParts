@@ -1,27 +1,41 @@
 ﻿using AutoParts.Services.Interfaces;
+using AutoParts.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutoParts.Controllers
 {
     public class ProdutoController : Controller
     {
-        private readonly IProdutoService _service;
+        private readonly IProdutoService _produtoService;
+        private readonly ICategoriaService _categoriaService;
+        private readonly IMarcaService _marcaService;
+
         public ProdutoController(
-            IProdutoService service)
+            IProdutoService produtoService,
+            ICategoriaService categoriaService,
+            IMarcaService marcaService)
         {
-            _service = service;
+            _produtoService = produtoService;
+            _categoriaService = categoriaService;
+            _marcaService = marcaService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var produtos = await _service.GetAllAsync();
+            var produtos = await _produtoService.GetAllAsync();
 
             return View(produtos);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var vm = new ProdutoFormViewModel
+            {
+                Categorias = await _categoriaService.GetSelectListAsync(),
+                Marcas = await _marcaService.GetSelectListAsync()
+            };
+
+            return View(vm);
         }
     }
 }
