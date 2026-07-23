@@ -5,8 +5,21 @@ using AutoParts.Services.Implementations;
 using AutoParts.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using AutoParts.Data.Seed;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.File(
+        "logs/autoparts-.log",
+        rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 30)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -54,5 +67,7 @@ using (var scope = app.Services.CreateScope())
 
     await DbInitializer.SeedAsync(context);
 }
+
+Log.Information("AutoParts iniciado com sucesso.");
 
 app.Run();
