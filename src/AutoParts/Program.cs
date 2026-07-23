@@ -6,6 +6,8 @@ using AutoParts.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using AutoParts.Data.Seed;
 using Serilog;
+using AutoParts.Middleware;
+using HealthChecks.UI.Client;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -34,9 +36,16 @@ builder.Services.AddScoped<IProdutoService, ProdutoService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IMarcaService, MarcaService>();
 
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+        connectionString));
+
+builder.Services
+    .AddHealthChecks()
+    .AddSqlServer(connectionString!);
 
 var app = builder.Build();
 
@@ -53,12 +62,19 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Dashboard}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 using (var scope = app.Services.CreateScope())
 {
