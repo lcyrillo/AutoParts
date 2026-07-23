@@ -37,5 +37,36 @@ namespace AutoParts.Controllers
 
             return View(vm);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ProdutoFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.Categorias = await _categoriaService.GetSelectListAsync();
+                model.Marcas = await _marcaService.GetSelectListAsync();
+
+                return View(model);
+            }
+
+            try
+            {
+                await _produtoService.CriarAsync(model);
+
+                TempData["Sucesso"] = "Produto cadastrado com sucesso.";
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+
+                model.Categorias = await _categoriaService.GetSelectListAsync();
+                model.Marcas = await _marcaService.GetSelectListAsync();
+
+                return View(model);
+            }
+        }
     }
 }

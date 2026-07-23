@@ -1,4 +1,5 @@
 ﻿using AutoParts.Models.Produtos;
+using AutoParts.ViewModels;
 
 namespace AutoParts.Services.Interfaces
 {
@@ -6,7 +7,7 @@ namespace AutoParts.Services.Interfaces
     {
         Task<IEnumerable<Produto>> GetAllAsync();
         Task<Produto?> GetByIdAsync(int id);
-        Task CriarAsync(Produto produto);
+        Task CriarAsync(ProdutoFormViewModel produto);
         Task AtualizarAsync(Produto produto);
         Task ExcluirAsync(Produto produto);
     }

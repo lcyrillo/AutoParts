@@ -157,7 +157,21 @@
     </div>
 
 
+    @if (TempData["Sucesso"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
 
+            <i class="bi bi-check-circle"></i>
+
+            @TempData["Sucesso"]
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+
+        </div>
+    }
 
 
 
