@@ -158,27 +158,7 @@ cd autoparts
 
 ---
 
-## Subir SQL Server
 
-```bash
-docker compose up -d
-```
-
----
-
-## Atualizar banco
-
-```bash
-dotnet ef database update
-```
-
----
-
-## Executar
-
-```bash
-dotnet run --project src/AutoParts.Web
-```
 
 ---
 
@@ -202,7 +182,124 @@ src
 └── AutoParts.Tests
 ```
 
+# 🚀 Executando o projeto com Docker
+
+O AutoParts possui um ambiente de demonstração utilizando Docker Compose, contendo:
+
+- 🌐 Aplicação ASP.NET Core MVC
+- 🗄 SQL Server 2022
+- 📋 Seq para visualização dos logs estruturados
+- 💾 Volumes persistentes para dados do banco e logs
+
 ---
+
+## 🐳 Pré-requisitos
+
+Antes de iniciar, tenha instalado:
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- .NET 9 SDK (caso queira executar fora do container)
+
+---
+
+## Subir o ambiente completo
+
+Na raiz do projeto onde está localizado o arquivo `docker-compose.yml`:
+
+```bash
+docker compose up -d
+```
+
+O comando irá iniciar:
+
+Serviço	Porta	Descrição
+AutoParts	8080	Aplicação Web
+SQL Server	1433	Banco de dados
+Seq	5341	Visualização dos logs
+
+Acessar a aplicação
+
+Após os containers iniciarem:
+
+```bash
+http://localhost:8080
+```
+
+## Visualizar logs com Seq
+
+O projeto utiliza Serilog + Seq para armazenamento e consulta dos logs estruturados.
+
+Acesse:
+
+```bash
+http://localhost:5341
+```
+
+O Seq permite acompanhar:
+
+Inicialização da aplicação
+Operações realizadas pelos usuários
+Logs dos serviços
+Erros e exceções
+Eventos de negócio
+
+Exemplo de eventos registrados:
+
+```bash
+Aplicação AutoParts iniciada
+
+Produto criado com sucesso. Id=1002
+
+Cadastro concluído. Código=468789-987
+```
+
+## Estrutura Docker
+
+Ambiente criado:
+
+```bash
+docker
+│
+├── AutoParts Container
+│   └── ASP.NET Core 9 MVC
+│
+├── SQL Server Container
+│   └── Database AutoParts
+│
+└── Seq Container
+    └── Logs estruturados
+```
+
+Parar os containers
+
+```bash
+docker compose down
+```
+
+## Remover containers e volumes
+
+⚠️ Este comando remove os dados persistidos do banco de dados e logs.
+
+```bash
+docker compose down -v
+```
+
+## 📋 Observabilidade
+
+O projeto possui monitoramento utilizando:
+
+Serilog para logging estruturado
+Seq para análise e consulta dos eventos
+Health Checks para validação dos serviços
+
+Endpoint de saúde da aplicação:
+
+```bash
+http://localhost:8080/health
+```
+
+O endpoint valida a disponibilidade dos componentes monitorados, incluindo a conexão com o SQL Server.
+
 
 # 📸 Telas (Em desenvolvimento)
 
