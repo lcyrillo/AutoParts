@@ -8,28 +8,33 @@ using AutoParts.Data.Seed;
 using Serilog;
 using AutoParts.Middleware;
 using HealthChecks.UI.Client;
+using Serilog.Debugging;
+
+SelfLog.Enable(msg => Console.Error.WriteLine(msg));
+
+var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
 
                 // Esconde logs do ASP.NET
                 .MinimumLevel.Override(
-                    "Microsoft", 
+                    "Microsoft",
                     Serilog.Events.LogEventLevel.Warning)
 
                 // Esconde logs do EF Core
                 .MinimumLevel.Override(
-                    "Microsoft.EntityFrameworkCore", 
+                    "Microsoft.EntityFrameworkCore",
                     Serilog.Events.LogEventLevel.Warning)
 
                 // Esconde logs do Kestrel
                 .MinimumLevel.Override(
-                    "Microsoft.AspNetCore", 
+                    "Microsoft.AspNetCore",
                     Serilog.Events.LogEventLevel.Warning)
 
                 // Esconde logs do System
                 .MinimumLevel.Override(
-                    "System", 
+                    "System",
                     Serilog.Events.LogEventLevel.Warning)
 
                 .MinimumLevel.Override(
@@ -45,11 +50,11 @@ Log.Logger = new LoggerConfiguration()
                     rollingInterval: RollingInterval.Day,
                     retainedFileCountLimit: 30)
 
-                .WriteTo.Seq("http://localhost:5341")
+                // .WriteTo.Seq("http://localhost:5341") vs
+                .WriteTo.Seq(
+                    builder.Configuration["Serilog:WriteTo:0:Args:serverUrl"] ?? "http://seq:80") //docker
 
                 .CreateLogger();
-
-var builder = WebApplication.CreateBuilder(args);
 
 var port = Environment.GetEnvironmentVariable("PORT");
 
@@ -61,7 +66,25 @@ if (!string.IsNullOrEmpty(port))
 builder.Logging.ClearProviders();
 builder.Host.UseSerilog();
 
-Log.Information("Aplicação AutoParts iniciada");
+Log.Information("AplicaÃ§Ã£o AutoParts iniciada");
+
+// Log.Information("===== TESTE SEQ =====");
+// Log.CloseAndFlush();
+
+// Thread.Sleep(5000);
+
+// try
+// {
+//     Log.Information("TESTE SEQ {Data}", DateTime.Now);
+
+//     Log.CloseAndFlush();
+
+//     Console.WriteLine("Evento enviado ao Seq.");
+// }
+// catch (Exception ex)
+// {
+//     Console.WriteLine(ex);
+// }
 
 builder.Host.UseSerilog();
 
@@ -118,13 +141,23 @@ app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
-using (var scope = app.Services.CreateScope())
+//O container continua vivo mesmo que o banco demore
+try
 {
+    using var scope = app.Services.CreateScope();
+
     var context = scope.ServiceProvider
-                       .GetRequiredService<ApplicationDbContext>();
+        .GetRequiredService<ApplicationDbContext>();
 
     await DbInitializer.SeedAsync(context);
+
+    Log.Information("Banco inicializado.");
 }
+catch (Exception ex)
+{
+    Log.Error(ex, "Erro ao inicializar banco.");
+}
+
 
 Log.Information("AutoParts iniciado com sucesso.");
 

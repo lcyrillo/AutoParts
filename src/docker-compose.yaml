@@ -41,9 +41,39 @@ services:
     volumes:
       - seq_data:/data
 
+  autoparts:
+    image: lcyrillo/autoparts:latest
+    container_name: autoparts-web
+    restart: unless-stopped
+
     depends_on:
       sqlserver:
         condition: service_healthy
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+
+      ConnectionStrings__DefaultConnection: >
+        Server=sqlserver;
+        Database=AutoParts;
+        User Id=sa;
+        Password=SuaSenha@123;
+        TrustServerCertificate=True;
+
+    healthcheck:
+      test: [
+        "CMD", 
+        "wget", 
+        "--spider", 
+        "http://localhost:8080/health"
+        ]
+      interval: 20s
+      timeout: 5s
+      retries: 5
 
 volumes:
   sql_data:
