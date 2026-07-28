@@ -10,16 +10,51 @@ using AutoParts.Middleware;
 using HealthChecks.UI.Client;
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .Enrich.FromLogContext()
-    .WriteTo.Console()
-    .WriteTo.File(
-        "logs/autoparts-.log",
-        rollingInterval: RollingInterval.Day,
-        retainedFileCountLimit: 30)
-    .CreateLogger();
+                .MinimumLevel.Information()
+
+                // Esconde logs do ASP.NET
+                .MinimumLevel.Override(
+                    "Microsoft", 
+                    Serilog.Events.LogEventLevel.Warning)
+
+                // Esconde logs do EF Core
+                .MinimumLevel.Override(
+                    "Microsoft.EntityFrameworkCore", 
+                    Serilog.Events.LogEventLevel.Warning)
+
+                // Esconde logs do Kestrel
+                .MinimumLevel.Override(
+                    "Microsoft.AspNetCore", 
+                    Serilog.Events.LogEventLevel.Warning)
+
+                // Esconde logs do System
+                .MinimumLevel.Override(
+                    "System", 
+                    Serilog.Events.LogEventLevel.Warning)
+
+                .MinimumLevel.Override(
+                    "Microsoft.EntityFrameworkCore.Database.Command",
+                    Serilog.Events.LogEventLevel.Error)
+
+                .Enrich.FromLogContext()
+
+                .WriteTo.Console()
+
+                .WriteTo.File(
+                    "logs/autoparts-.log",
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: 30)
+
+                .WriteTo.Seq("http://localhost:5341")
+
+                .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Host.UseSerilog();
+
+Log.Information("Aplicação AutoParts iniciada");
 
 builder.Host.UseSerilog();
 

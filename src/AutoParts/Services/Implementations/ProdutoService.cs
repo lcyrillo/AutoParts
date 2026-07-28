@@ -20,61 +20,137 @@ namespace AutoParts.Services.Implementations
 
         public async Task<IEnumerable<Produto>> GetAllAsync()
         {
-            return await _repository.GetAllAsync();
+            _logger.LogInformation("Consultando produtos.");
+
+            var produtos = await _repository.GetAllAsync();
+
+            _logger.LogInformation(
+                "Consulta realizada. {Quantidade} produtos encontrados.",
+                produtos.Count());
+
+            return produtos;
         }
 
 
         public async Task<Produto?> GetByIdAsync(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            _logger.LogInformation(
+                "Consultando produto Id={Id}.",
+                id);
+
+            var produto = await _repository.GetByIdAsync(id);
+
+            if (produto == null)
+            {
+                _logger.LogWarning(
+                    "Produto Id={Id} não encontrado.",
+                    id);
+            }
+
+            return produto;
         }
 
 
         public async Task CriarAsync(ProdutoFormViewModel model)
         {
-            _logger.LogInformation(
-                "Iniciando cadastro do produto {Codigo}",
-                model.Codigo);
-
-            if (await _repository.ExistsCodigoAsync(model.Codigo))
+            try
             {
-                _logger.LogError(
-                    "Já existe um produto com esse código {Codigo}",
+                _logger.LogInformation(
+                    "Iniciando regra de negócio para cadastro do produto {Codigo}.",
                     model.Codigo);
 
-                throw new Exception("Já existe um produto com esse código");
+                if (await _repository.ExistsCodigoAsync(model.Codigo))
+                {
+                    _logger.LogWarning(
+                        "Produto com código {Codigo} já existe.",
+                        model.Codigo);
+
+                    throw new Exception("Já existe um produto com esse código.");
+                }
+
+                var produto = new Produto(
+                    model.Codigo,
+                    model.Descricao,
+                    model.PrecoCompra,
+                    model.PrecoVenda,
+                    model.Estoque,
+                    model.EstoqueMinimo,
+                    model.CategoriaId!.Value,
+                    model.MarcaId!.Value,
+                    model.Ativo,
+                    model.Localizacao,
+                    model.Observacoes);
+
+                await _repository.AddAsync(produto);
+
+                _logger.LogInformation(
+                    "Produto criado com sucesso. Id={Id}, Código={Codigo}.",
+                    produto.Id,
+                    produto.Codigo);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Erro durante a regra de negócio de cadastro do produto {Codigo}.",
+                    model.Codigo);
 
-            var produto = new Produto(
-                model.Codigo,
-                model.Descricao,
-                model.PrecoCompra,
-                model.PrecoVenda,
-                model.Estoque,
-                model.EstoqueMinimo,
-                model.CategoriaId!.Value,
-                model.MarcaId!.Value,
-                model.Ativo,
-                model.Localizacao,
-                model.Observacoes);
-
-            await _repository.AddAsync(produto);
-
-            _logger.LogInformation(
-                "Produto {Codigo} cadastrado com sucesso",
-                model.Codigo);
+                throw;
+            }
         }
 
 
         public async Task AtualizarAsync(Produto produto)
         {
-            await _repository.UpdateAsync(produto);
+            try
+            {
+                _logger.LogInformation(
+                    "Atualizando produto Id={Id}.",
+                    produto.Id);
+
+                await _repository.UpdateAsync(produto);
+
+                _logger.LogInformation(
+                    "Produto atualizado. Id={Id}, Código={Codigo}.",
+                    produto.Id,
+                    produto.Codigo);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Erro ao atualizar produto Id={Id}.",
+                    produto.Id);
+
+                throw;
+            }
         }
 
 
         public async Task ExcluirAsync(Produto produto)
         {
-            await _repository.DeleteAsync(produto);
+            try
+            {
+                _logger.LogInformation(
+                    "Atualizando produto Id={Id}.",
+                    produto.Id);
+
+                await _repository.UpdateAsync(produto);
+
+                _logger.LogInformation(
+                    "Produto atualizado. Id={Id}, Código={Codigo}.",
+                    produto.Id,
+                    produto.Codigo);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Erro ao atualizar produto Id={Id}.",
+                    produto.Id);
+
+                throw;
+            }
         }
     }
 }
