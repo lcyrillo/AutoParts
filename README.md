@@ -221,10 +221,11 @@ docker compose up -d
 
 O comando irá iniciar:
 
-Serviço	Porta	Descrição
-AutoParts	8080	Aplicação Web
-SQL Server	1433	Banco de dados
-Seq	5341	Visualização dos logs
+| Serviço   |  Porta |	Descrição
+-----------------------------------------------
+| AutoParts |  8080	 |  Aplicação Web
+| SQL Server|  1433	 |  Banco de dados
+| Seq	    |  5341	 |  Visualização dos logs
 
 Acessar a aplicação
 
