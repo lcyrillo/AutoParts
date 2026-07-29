@@ -376,7 +376,7 @@ Este projeto tem como finalidade:
 ## 📸 Demonstração
 
 
-![Dashboard](../AutoParts/docs/images/TelaSistemaDemo.png)
+![Dashboard](docs/images/TelaSistemaDemo.png)
 
 ---
 
