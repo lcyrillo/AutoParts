@@ -9,6 +9,8 @@
 ![SQL Server](https://img.shields.io/badge/SQL_Server-CC2927?style=for-the-badge&logo=microsoftsqlserver)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap)
+![Serilog](https://img.shields.io/badge/Serilog-Logging-orange?style=for-the-badge)
+![Seq](https://img.shields.io/badge/Seq-Observability-6C2DC7?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 Sistema ERP moderno para gerenciamento de autopeças, contemplando estoque, vendas, compras, financeiro, clientes, fornecedores e relatórios.
@@ -34,6 +36,13 @@ O projeto será desenvolvido utilizando conceitos modernos como:
 - SQL Server
 - ASP.NET Core MVC
 - Bootstrap 5
+
+---
+
+## 🔗 Links
+
+- 📦 Docker Hub: https://hub.docker.com/r/lcyrillo/autoparts
+- 🚀 Release v1.0.0: https://github.com/lcyrillo/AutoParts/releases/tag/v1.0.0
 
 ---
 
@@ -284,6 +293,12 @@ docker compose down
 docker compose down -v
 ```
 
+A imagem oficial está disponível no Docker Hub:
+
+```bash
+docker pull lcyrillo/autoparts:v1.0.0
+```
+
 ## 📋 Observabilidade
 
 O projeto possui monitoramento utilizando:
@@ -352,6 +367,13 @@ Este projeto tem como finalidade:
 - Evolução contínua
 - Portfólio profissional
 - Demonstração de conhecimentos em ASP.NET Core
+
+---
+
+## 📸 Demonstração
+
+
+![Dashboard](../AutoParts/docs/images/TelaSistemaDemo.png)
 
 ---
 
