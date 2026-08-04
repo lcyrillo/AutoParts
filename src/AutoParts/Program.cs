@@ -9,6 +9,8 @@ using Serilog;
 using AutoParts.Middleware;
 using HealthChecks.UI.Client;
 using Serilog.Debugging;
+using AutoParts.Models.Identity;
+using Microsoft.AspNetCore.Identity;
 
 SelfLog.Enable(msg => Console.Error.WriteLine(msg));
 
@@ -109,6 +111,31 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         connectionString));
 
 builder.Services
+    .AddIdentity<ApplicationUser, IdentityRole>(options =>
+    {
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequiredLength = 6;
+
+        options.User.RequireUniqueEmail = true;
+    })
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AcessoNegado";
+
+    options.Cookie.Name = "AutoParts.Auth";
+
+    options.SlidingExpiration = true;
+    options.ExpireTimeSpan = TimeSpan.FromHours(8);
+});
+
+builder.Services
     .AddHealthChecks()
     .AddSqlServer(connectionString!);
 
@@ -125,6 +152,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<ExceptionMiddleware>();

@@ -1,12 +1,15 @@
 ﻿using AutoParts.Models;
+using AutoParts.Models.Identity;
 using AutoParts.Models.Produtos;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AutoParts.Data.Context;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public ApplicationDbContext(
+        DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
     }

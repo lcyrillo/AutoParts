@@ -8,7 +8,7 @@ public class DbInitializer
     public static async Task SeedAsync(ApplicationDbContext context)
     {
         //Garante que banco esteja criado
-        await context.Database.EnsureCreatedAsync();
+        //await context.Database.EnsureCreatedAsync();
 
         // ==========================
         // Categorias
