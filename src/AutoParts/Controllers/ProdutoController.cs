@@ -97,5 +97,117 @@ namespace AutoParts.Controllers
                 return View(model);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            _logger.LogInformation(
+                "Tela de edição de produto acessada. Id={id}",
+                id);
+
+            var produto = await _produtoService.GetByIdAsync(id);
+
+            if (produto == null)
+            {
+                _logger.LogWarning(
+                    "Produto Id={id} não encontrado para edição.",
+                    id);
+
+                return NotFound();
+            }
+
+            var model = new ProdutoFormViewModel
+            {
+                Id = produto.Id,
+                Codigo = produto.Codigo,
+                Descricao = produto.Descricao,
+                PrecoCompra = produto.PrecoCompra,
+                PrecoVenda = produto.PrecoVenda,
+                Estoque = produto.Estoque,
+                EstoqueMinimo = produto.EstoqueMinimo,
+                CategoriaId = produto.CategoriaId,
+                MarcaId = produto.MarcaId,
+                Ativo = produto.Ativo,
+                Localizacao = produto.Localizacao,
+                Observacoes = produto.Observacoes,
+
+                Categorias = await _categoriaService.GetSelectListAsync(),
+                Marcas = await _marcaService.GetSelectListAsync()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(
+            int id,
+            ProdutoFormViewModel model)
+        {
+            _logger.LogInformation(
+                "Solicitação de atualização recebida. Id={Id}, Código={Codigo}",
+                id,
+                model.Codigo);
+
+            if (id != model.Id)
+            {
+                _logger.LogWarning(
+                    "Id da URL diferente do Id do formulário. URL={UrlId}, Form={FormId}",
+                    id,
+                    model.Id);
+
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning(
+                    "ModelState inválido para atualização do produto Id={Id}",
+                    id);
+
+                model.Categorias =
+                    await _categoriaService.GetSelectListAsync();
+
+                model.Marcas =
+                    await _marcaService.GetSelectListAsync();
+
+                return View(model);
+            }
+
+            try
+            {
+                await _produtoService.AtualizarAsync(id, model);
+
+                _logger.LogInformation(
+                    "Atualização concluída. Id={Id}, Código={Codigo}",
+                    id,
+                    model.Codigo);
+
+                TempData["Sucesso"] =
+                    "Produto atualizado com sucesso.";
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Erro ao atualizar produto Id={Id}, Código={Codigo}.",
+                    id,
+                    model.Codigo);
+
+                ModelState.AddModelError(
+                    string.Empty,
+                    ex.Message);
+
+                model.Categorias =
+                    await _categoriaService.GetSelectListAsync();
+
+                model.Marcas =
+                    await _marcaService.GetSelectListAsync();
+
+                return View(model);
+            }
+        }
     }
 }

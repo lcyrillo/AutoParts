@@ -50,30 +50,30 @@ namespace AutoParts.Models.Produtos
         }
 
         public void Atualizar(
-        string codigo,
-        string descricao,
-        decimal precoCompra,
-        decimal precoVenda,
-        int estoque,
-        int estoqueMinimo,
-        int categoriaId,
-        int marcaId,
-        bool ativo,
-        string? localizacao,
-        string? observacoes)
-    {
-        Codigo = codigo;
-        Descricao = descricao;
-        PrecoCompra = precoCompra;
-        PrecoVenda = precoVenda;
-        Estoque = estoque;
-        EstoqueMinimo = estoqueMinimo;
-        CategoriaId = categoriaId;
-        MarcaId = marcaId;
-        Ativo = ativo;
-        Localizacao = localizacao;
-        Observacoes = observacoes;
-    }
+            string codigo,
+            string descricao,
+            decimal precoCompra,
+            decimal precoVenda,
+            int estoque,
+            int estoqueMinimo,
+            int categoriaId,
+            int marcaId,
+            bool ativo,
+            string? localizacao,
+            string? observacoes)
+        {
+            Codigo = codigo;
+            Descricao = descricao;
+            PrecoCompra = precoCompra;
+            PrecoVenda = precoVenda;
+            Estoque = estoque;
+            EstoqueMinimo = estoqueMinimo;
+            CategoriaId = categoriaId;
+            MarcaId = marcaId;
+            Ativo = ativo;
+            Localizacao = localizacao;
+            Observacoes = observacoes;
+        }
 
     }
 }

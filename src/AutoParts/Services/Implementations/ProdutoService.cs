@@ -100,18 +100,58 @@ namespace AutoParts.Services.Implementations
         }
 
 
-        public async Task AtualizarAsync(Produto produto)
+        public async Task AtualizarAsync(
+            int id,
+            ProdutoFormViewModel model)
         {
             try
             {
                 _logger.LogInformation(
-                    "Atualizando produto Id={Id}.",
-                    produto.Id);
+                    "Iniciando atualização do produto Id={Id}, Código={Codigo}.",
+                    id,
+                    model.Codigo);
+
+                var produto = await _repository.GetByIdAsync(id);
+
+                if (produto == null)
+                {
+                    _logger.LogWarning(
+                        "Produto Id={Id} não encontrado para atualização.",
+                        id);
+
+                    throw new Exception("Produto não encontrado.");
+                }
+
+                var codigoExiste = await _repository.ExistsCodigoAsync(model.Codigo);
+
+                if (codigoExiste && produto.Codigo != model.Codigo)
+                {
+                    _logger.LogWarning(
+                        "Tentativa de alterar para código já existente. Id={Id}, Código={Codigo}.",
+                        id,
+                        model.Codigo);
+
+                    throw new Exception(
+                        "Já existe um produto com esse código.");
+                }
+
+                produto.Atualizar(
+                    model.Codigo,
+                    model.Descricao,
+                    model.PrecoCompra,
+                    model.PrecoVenda,
+                    model.Estoque,
+                    model.EstoqueMinimo,
+                    model.CategoriaId!.Value,
+                    model.MarcaId!.Value,
+                    model.Ativo,
+                    model.Localizacao,
+                    model.Observacoes);
 
                 await _repository.UpdateAsync(produto);
 
                 _logger.LogInformation(
-                    "Produto atualizado. Id={Id}, Código={Codigo}.",
+                    "Produto atualizado com sucesso. Id={Id}, Código={Codigo}.",
                     produto.Id,
                     produto.Codigo);
             }
@@ -119,22 +159,31 @@ namespace AutoParts.Services.Implementations
             {
                 _logger.LogError(
                     ex,
-                    "Erro ao atualizar produto Id={Id}.",
-                    produto.Id);
+                    "Erro durante atualização do produto Id={Id}.",
+                    id);
 
                 throw;
             }
         }
 
-
-        public async Task ExcluirAsync(Produto produto)
+        public async Task ExcluirAsync(int id)
         {
             try
             {
                 _logger.LogInformation(
-                    "Excluindo produto Id={Id}, Código={Codigo}.",
-                    produto.Id,
-                    produto.Codigo);
+                    "Iniciando exclusão do produto Id={Id}.",
+                    id);
+
+                var produto = await _repository.GetByIdAsync(id);
+
+                if (produto == null)
+                {
+                    _logger.LogWarning(
+                        "Produto Id={Id} não encontrado para exclusão.",
+                        id);
+
+                    throw new Exception("Produto não encontrado.");
+                }
 
                 await _repository.DeleteAsync(produto);
 
@@ -146,10 +195,9 @@ namespace AutoParts.Services.Implementations
             catch (Exception ex)
             {
                 _logger.LogError(
-                   ex,
-                   "Erro ao excluir produto Id={Id}, Código={Codigo}.",
-                   produto.Id,
-                   produto.Codigo);
+                    ex,
+                    "Erro ao excluir produto Id={Id}.",
+                    id);
 
                 throw;
             }
