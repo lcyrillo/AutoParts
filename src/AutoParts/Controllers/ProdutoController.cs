@@ -1,5 +1,5 @@
 ﻿using AutoParts.Services.Interfaces;
-using AutoParts.ViewModels;
+using AutoParts.ViewModels.Produto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutoParts.Controllers

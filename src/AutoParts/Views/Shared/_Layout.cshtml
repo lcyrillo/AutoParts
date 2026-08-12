@@ -23,25 +23,32 @@
 
 <body>
 
-    <div class="app-layout">
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div class="app-layout">
 
-        <partial name="_Sidebar" />
+            <partial name="_Sidebar" />
 
-        <div class="app-main">
+            <div class="app-main">
 
-            <partial name="_Topbar" />
+                <partial name="_Topbar" />
 
-            <main class="page-wrapper">
+                <main class="page-wrapper">
 
-                <partial name="_Breadcrumb" />
+                    <partial name="_Breadcrumb" />
 
-                @RenderBody()
+                    @RenderBody()
 
-            </main>
+                </main>
+
+            </div>
 
         </div>
-
-    </div>
+    }
+    else
+    {
+        @RenderBody()
+    }
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 

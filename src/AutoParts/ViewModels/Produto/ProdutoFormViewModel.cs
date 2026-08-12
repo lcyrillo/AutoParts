@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace AutoParts.ViewModels;
+namespace AutoParts.ViewModels.Produto;
 
 public class ProdutoFormViewModel
 {

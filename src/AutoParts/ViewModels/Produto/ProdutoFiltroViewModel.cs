@@ -1,4 +1,4 @@
-﻿namespace AutoParts.ViewModels
+﻿namespace AutoParts.ViewModels.Produto
 {
     public class ProdutoFiltroViewModel
     {

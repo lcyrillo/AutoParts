@@ -11,6 +11,7 @@ using HealthChecks.UI.Client;
 using Serilog.Debugging;
 using AutoParts.Models.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Routing;
 
 SelfLog.Enable(msg => Console.Error.WriteLine(msg));
 
@@ -88,10 +89,13 @@ Log.Information("Aplicação AutoParts iniciada");
 //     Console.WriteLine(ex);
 // }
 
-builder.Host.UseSerilog();
-
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(
+        new Microsoft.AspNetCore.Mvc.Authorization.AuthorizeFilter());
+})
+.AddApplicationPart(typeof(Program).Assembly);
 
 //Repositories
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
@@ -127,7 +131,8 @@ builder.Services
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
-    options.AccessDeniedPath = "/Account/AcessoNegado";
+    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.LogoutPath = "/Account/Logout";
 
     options.Cookie.Name = "AutoParts.Auth";
 
@@ -159,10 +164,12 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapStaticAssets();
 
+app.MapControllers();
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Dashboard}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Account}/{action=Login}/{id?}");
+    //.WithStaticAssets();
 
 app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 {
@@ -174,10 +181,12 @@ try
 {
     using var scope = app.Services.CreateScope();
 
-    var context = scope.ServiceProvider
-        .GetRequiredService<ApplicationDbContext>();
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<ApplicationDbContext>();
 
     await DbInitializer.SeedAsync(context);
+    await IdentityInitializer.SeedAsync(services);
 
     Log.Information("Banco inicializado.");
 }
@@ -188,5 +197,31 @@ catch (Exception ex)
 
 
 Log.Information("AutoParts iniciado com sucesso.");
+
+var endpointDataSource = app.Services.GetRequiredService<EndpointDataSource>();
+
+Console.WriteLine("========== ENDPOINTS ==========");
+
+foreach (var endpoint in endpointDataSource.Endpoints)
+{
+    if (endpoint is RouteEndpoint routeEndpoint)
+    {
+        Console.WriteLine(
+            $"{routeEndpoint.DisplayName} => {routeEndpoint.RoutePattern.RawText}");
+    }
+    else
+    {
+        Console.WriteLine(endpoint.DisplayName);
+    }
+}
+
+Console.WriteLine("================================");
+
+var dataSource = app.Services.GetRequiredService<EndpointDataSource>();
+
+foreach (var endpoint in dataSource.Endpoints)
+{
+    Console.WriteLine(endpoint.DisplayName);
+}
 
 app.Run();

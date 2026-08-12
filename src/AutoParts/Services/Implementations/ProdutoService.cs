@@ -1,7 +1,7 @@
 ﻿using AutoParts.Models.Produtos;
 using AutoParts.Repositories.Interfaces;
 using AutoParts.Services.Interfaces;
-using AutoParts.ViewModels;
+using AutoParts.ViewModels.Produto;
 
 namespace AutoParts.Services.Implementations
 {
@@ -132,22 +132,24 @@ namespace AutoParts.Services.Implementations
             try
             {
                 _logger.LogInformation(
-                    "Atualizando produto Id={Id}.",
-                    produto.Id);
+                    "Excluindo produto Id={Id}, Código={Codigo}.",
+                    produto.Id,
+                    produto.Codigo);
 
-                await _repository.UpdateAsync(produto);
+                await _repository.DeleteAsync(produto);
 
                 _logger.LogInformation(
-                    "Produto atualizado. Id={Id}, Código={Codigo}.",
+                    "Produto excluído com sucesso. Id={Id}, Código={Codigo}.",
                     produto.Id,
                     produto.Codigo);
             }
             catch (Exception ex)
             {
                 _logger.LogError(
-                    ex,
-                    "Erro ao atualizar produto Id={Id}.",
-                    produto.Id);
+                   ex,
+                   "Erro ao excluir produto Id={Id}, Código={Codigo}.",
+                   produto.Id,
+                   produto.Codigo);
 
                 throw;
             }

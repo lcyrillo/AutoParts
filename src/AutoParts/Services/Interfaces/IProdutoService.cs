@@ -1,5 +1,5 @@
 ﻿using AutoParts.Models.Produtos;
-using AutoParts.ViewModels;
+using AutoParts.ViewModels.Produto;
 
 namespace AutoParts.Services.Interfaces
 {

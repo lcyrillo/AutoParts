@@ -16,7 +16,16 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        //modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+        modelBuilder.Entity<Produto>(entity =>
+        {
+            entity.Property(x => x.PrecoCompra)
+                .HasPrecision(18, 2);
+
+            entity.Property(x => x.PrecoVenda)
+                .HasPrecision(18, 2);
+        });
 
         base.OnModelCreating(modelBuilder);
     }
