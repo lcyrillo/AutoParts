@@ -209,5 +209,51 @@ namespace AutoParts.Controllers
                 return View(model);
             }
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            _logger.LogInformation(
+                "Solicitação de exclusão recebida. Id={Id}",
+                id);
+
+            try
+            {
+                await _produtoService.ExcluirAsync(id);
+
+                _logger.LogInformation(
+                    "Exclusão concluída. Id={Id}",
+                    id);
+
+                TempData["Sucesso"] = "Produto excluído com sucesso.";
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Produto Id={Id} não encontrado para exclusão.",
+                    id);
+
+                TempData["Erro"] =
+                    $"Produto Id={id} não encontrado.";
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Erro ao excluir produto Id={Id}.",
+                    id);
+
+                TempData["Erro"] =
+                    $"Erro ao excluir produto: {ex.Message}";
+
+                return RedirectToAction(nameof(Index));
+            }
+        }
     }
 }

@@ -46,7 +46,7 @@ services:
       context: .
       dockerfile: Dockerfile
 
-    image: lcyrillo/autoparts:test
+    image: lcyrillo/autoparts:1.2.0
     container_name: autoparts-web
     restart: unless-stopped
 
