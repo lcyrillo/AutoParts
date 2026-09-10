@@ -3,6 +3,7 @@ using AutoParts.Repositories.Interfaces;
 using AutoParts.Services.Interfaces;
 using AutoParts.ViewModels.Produto;
 using AutoParts.Services.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace AutoParts.Services.Implementations
 {
@@ -73,7 +74,20 @@ namespace AutoParts.Services.Implementations
                     model.Localizacao,
                     model.Observacoes);
 
-                await _repository.AddAsync(produto);
+                try
+                {
+                    await _repository.AddAsync(produto);
+                }
+                catch (DbUpdateException ex)
+                {
+                    _logger.LogWarning(
+                        ex,
+                        "Violação de unicidade ao cadastrar o produto {Codigo}.",
+                        model.Codigo);
+
+                    throw new BusinessException(
+                        "Já existe um produto com esse código.");
+                }
 
                 _logger.LogInformation(
                     "Produto criado com sucesso. Id={Id}, Código={Codigo}.",

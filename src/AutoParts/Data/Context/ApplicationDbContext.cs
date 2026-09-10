@@ -25,6 +25,9 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
             entity.Property(x => x.PrecoVenda)
                 .HasPrecision(18, 2);
+
+            entity.HasIndex(x => x.Codigo)
+                .IsUnique();
         });
 
         base.OnModelCreating(modelBuilder);
