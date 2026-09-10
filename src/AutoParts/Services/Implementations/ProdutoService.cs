@@ -2,6 +2,7 @@
 using AutoParts.Repositories.Interfaces;
 using AutoParts.Services.Interfaces;
 using AutoParts.ViewModels.Produto;
+using AutoParts.Services.Exceptions;
 
 namespace AutoParts.Services.Implementations
 {
@@ -31,7 +32,6 @@ namespace AutoParts.Services.Implementations
             return produtos;
         }
 
-
         public async Task<Produto?> GetByIdAsync(int id)
         {
             _logger.LogInformation(
@@ -50,7 +50,6 @@ namespace AutoParts.Services.Implementations
             return produto;
         }
 
-
         public async Task CriarAsync(ProdutoFormViewModel model)
         {
             try
@@ -59,14 +58,7 @@ namespace AutoParts.Services.Implementations
                     "Iniciando regra de negócio para cadastro do produto {Codigo}.",
                     model.Codigo);
 
-                if (await _repository.ExistsCodigoAsync(model.Codigo))
-                {
-                    _logger.LogWarning(
-                        "Produto com código {Codigo} já existe.",
-                        model.Codigo);
-
-                    throw new Exception("Já existe um produto com esse código.");
-                }
+                await ValidarProdutoAsync(model);
 
                 var produto = new Produto(
                     model.Codigo,
@@ -88,6 +80,15 @@ namespace AutoParts.Services.Implementations
                     produto.Id,
                     produto.Codigo);
             }
+            catch (BusinessException ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Regra de negócio violada ao cadastrar o produto {Codigo}.",
+                    model.Codigo);
+
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(
@@ -98,7 +99,6 @@ namespace AutoParts.Services.Implementations
                 throw;
             }
         }
-
 
         public async Task AtualizarAsync(
             int id,
@@ -122,18 +122,7 @@ namespace AutoParts.Services.Implementations
                     throw new Exception("Produto não encontrado.");
                 }
 
-                var codigoExiste = await _repository.ExistsCodigoAsync(model.Codigo);
-
-                if (codigoExiste && produto.Codigo != model.Codigo)
-                {
-                    _logger.LogWarning(
-                        "Tentativa de alterar para código já existente. Id={Id}, Código={Codigo}.",
-                        id,
-                        model.Codigo);
-
-                    throw new Exception(
-                        "Já existe um produto com esse código.");
-                }
+                await ValidarProdutoAsync(model, id);
 
                 produto.Atualizar(
                     model.Codigo,
@@ -155,6 +144,15 @@ namespace AutoParts.Services.Implementations
                     produto.Id,
                     produto.Codigo);
             }
+            catch (BusinessException ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Regra de negócio violada durante atualização do produto Id={Id}.",
+                    id);
+
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(
@@ -165,7 +163,6 @@ namespace AutoParts.Services.Implementations
                 throw;
             }
         }
-
         public async Task ExcluirAsync(int id)
         {
             try
@@ -182,7 +179,7 @@ namespace AutoParts.Services.Implementations
                         "Produto Id={Id} não encontrado para exclusão.",
                         id);
 
-                    throw new Exception("Produto não encontrado.");
+                    throw new BusinessException("Produto não encontrado.");
                 }
 
                 await _repository.DeleteAsync(produto);
@@ -192,14 +189,78 @@ namespace AutoParts.Services.Implementations
                     produto.Id,
                     produto.Codigo);
             }
+            catch (BusinessException ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Regra de negócio violada ao excluir o produto Id={Id}.",
+                    id);
+
+                throw;
+            }
             catch (Exception ex)
             {
                 _logger.LogError(
                     ex,
-                    "Erro ao excluir produto Id={Id}.",
+                    "Erro inesperado ao excluir o produto Id={Id}.",
                     id);
 
                 throw;
+            }
+        }
+
+        private async Task ValidarProdutoAsync(
+            ProdutoFormViewModel model,
+            int? id = null)
+        {
+            if (string.IsNullOrEmpty(model.Codigo))
+                throw new Exception("O código do produto é obrigatório.");
+
+            if (string.IsNullOrWhiteSpace(model.Descricao))
+                throw new BusinessException("A descrição do produto é obrigatória.");
+
+            if (model.PrecoVenda <= 0)
+                throw new BusinessException(
+                    "O preço de venda deve ser maior que zero.");
+
+            if (model.PrecoVenda < model.PrecoCompra)
+                throw new BusinessException(
+                    "O preço de venda não pode ser menor que o preço de compra.");
+
+            if (!model.CategoriaId.HasValue)
+                throw new BusinessException(
+                    "A categoria do produto é obrigatória.");
+
+            if (!model.MarcaId.HasValue)
+                throw new BusinessException(
+                    "A marca do produto é obrigatória.");
+
+            var codigoExiste = await _repository.ExistsCodigoAsync(model.Codigo);
+
+            if (codigoExiste)
+            {
+                if (!id.HasValue)
+                {
+                    throw new BusinessException(
+                        "Já existe um produto com esse código.");
+                }
+
+                var produtoExistente = await _repository.GetByIdAsync(id.Value);
+
+                if (produtoExistente == null)
+                {
+                    throw new BusinessException(
+                        "Produto não encontrado.");
+                }
+
+                if (!string.Equals(
+                        produtoExistente.Codigo,
+                        model.Codigo,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new BusinessException(
+                        "Já existe um produto com esse código.");
+                }
             }
         }
     }

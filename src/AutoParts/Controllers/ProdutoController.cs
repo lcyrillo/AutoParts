@@ -1,6 +1,7 @@
 ﻿using AutoParts.Services.Interfaces;
 using AutoParts.ViewModels.Produto;
 using Microsoft.AspNetCore.Mvc;
+using AutoParts.Services.Exceptions;
 
 namespace AutoParts.Controllers
 {
@@ -81,6 +82,25 @@ namespace AutoParts.Controllers
                 TempData["Sucesso"] = "Produto cadastrado com sucesso.";
 
                 return RedirectToAction(nameof(Index));
+            }
+            catch (BusinessException ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Regra de negócio violada ao cadastrar o produto {Codigo}.",
+                    model.Codigo);
+
+                ModelState.AddModelError(
+                    string.Empty, 
+                    ex.Message);
+
+                model.Categorias = 
+                    await _categoriaService.GetSelectListAsync();
+
+                model.Marcas = 
+                    await _marcaService.GetSelectListAsync();
+
+                return View(model);
             }
             catch (Exception ex)
             {
@@ -188,6 +208,26 @@ namespace AutoParts.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+            catch (BusinessException ex)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "Regra de negócio violada ao atualizar produto Id={Id}, Código={Codigo}.",
+                    id,
+                    model.Codigo);
+
+                ModelState.AddModelError(
+                    string.Empty,
+                    ex.Message);
+
+                model.Categorias =
+                    await _categoriaService.GetSelectListAsync();
+
+                model.Marcas =
+                    await _marcaService.GetSelectListAsync();
+
+                return View(model);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(
@@ -198,7 +238,7 @@ namespace AutoParts.Controllers
 
                 ModelState.AddModelError(
                     string.Empty,
-                    ex.Message);
+                    "Ocorreu um erro inesperado ao atualizar o produto.");
 
                 model.Categorias =
                     await _categoriaService.GetSelectListAsync();
