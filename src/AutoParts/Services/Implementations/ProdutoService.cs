@@ -133,7 +133,7 @@ namespace AutoParts.Services.Implementations
                         "Produto Id={Id} não encontrado para atualização.",
                         id);
 
-                    throw new Exception("Produto não encontrado.");
+                    throw new BusinessException("Produto não encontrado.");
                 }
 
                 await ValidarProdutoAsync(model, id);
@@ -227,8 +227,8 @@ namespace AutoParts.Services.Implementations
             ProdutoFormViewModel model,
             int? id = null)
         {
-            if (string.IsNullOrEmpty(model.Codigo))
-                throw new Exception("O código do produto é obrigatório.");
+            if (string.IsNullOrWhiteSpace(model.Codigo))
+                throw new BusinessException("O código do produto é obrigatório.");
 
             if (string.IsNullOrWhiteSpace(model.Descricao))
                 throw new BusinessException("A descrição do produto é obrigatória.");
